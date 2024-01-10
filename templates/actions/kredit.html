@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="wrapper bg-gray">
+        <div class="container py-4 py-md-6 text-center">
+            <div class="row">
+                <div class="col-lg-10 col-xxl-8 mx-auto">
+                    <h1 class="display-1 mb-3">Kredit kalkulyator</h1>
+                </div>
+                <!-- /column -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </section>
+    <section class="wrapper bg-light">
+        <div class="container p-5">
+            <div class="col-12">
+                <h3 class="mb-3">Ma'lumotlarni kiriting:</h3>
+                <div class="form-floating mb-4 d-flex justify-content-between">
+
+                    <div class="row">
+                        <div class="col-6">
+                            <input id="kreditMiqdori" type="number" class="form-control" placeholder="Qancha summa?"
+                                   required>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group mb-3">
+                                <input id="kreditFoizi" type="text" class="form-control"
+                                       placeholder="Foizni kiriting(%)" required>
+                                <span class="input-group-text">(%)</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                             <div class="input-group mb-3">
+                                <input id="kreditMuddati" type="text" class="form-control"
+                                       placeholder="Qancha muddatga?" required>
+                                <span class="input-group-text">(oy)</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-success mx-3 text-white" onclick="kreditHisoblash()">Hisoblash
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="natijaUchun" class="alert alert-success"></div>
+            </div>
+        </div>
+    </section>
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        function kreditHisoblash() {
+            let kreditMiqdori = document.querySelector("#kreditMiqdori").value,
+                kreditFoizi = document.querySelector("#kreditFoizi").value / 100 / 12,
+                kreditMuddati = document.querySelector("#kreditMuddati").value;
+
+            let oymaOySumma = (kreditMiqdori * kreditFoizi) / (1 - Math.pow(1 + kreditFoizi, - kreditMuddati));
+            let jamiSumma = oymaOySumma * kreditMuddati;
+            
+            if (!kreditMiqdori && !kreditFoizi && !kreditMuddati) {
+                alert("Barcha maydonlarni to'ldiring!")
+            } else {
+                let natijaUchun = document.getElementById('natijaUchun');
+            natijaUchun.innerHTML = `Jami summa: <b>${jamiSumma.toLocaleString()}</b> so'm.
+<br><br>Oyma oy: <b>${oymaOySumma.toLocaleString()}</b> so'mdan!`;
+            }
+        }
+    </script>
+{% endblock %}
