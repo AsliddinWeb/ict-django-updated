@@ -7,6 +7,38 @@ from django.shortcuts import render, get_object_or_404
 from settings_app.models import *
 from .models import MeyoriyXujjatlar, OqituvchiKategoriyalari
 
+# Pdf
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+
+def generate_pdf(request):
+    avg_control = float(request.GET.get('avg_control', 0))
+    avg_experiment = float(request.GET.get('avg_experiment', 0))
+    effectiveness = float(request.GET.get('effectiveness', 0))
+
+    # PDF yaratish uchun kontekst
+    context = {
+        'avg_control': avg_control,
+        'avg_experiment': avg_experiment,
+        'effectiveness': effectiveness,
+    }
+
+    # HTML shablonni yuklash
+    template = get_template('pdf_template.html')
+    html = template.render(context)
+
+    # PDF yaratish
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="results.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Xatolik yuz berdi PDF yaratishda', status=500)
+
+    return response
+
+
 def more_page(request, category_id):
     # Required
     SEO_SETTINGS = SeoSettings.objects.last()
@@ -142,3 +174,151 @@ def kredit_page(request):
     }
 
     return render(request, 'actions/kredit.html', ctx)
+
+def ish_haqi(request):
+    # Required
+    SEO_SETTINGS = SeoSettings.objects.last()
+    FOOTER_SETTINGS = FooterSettings.objects.last()
+    SOCIAL_SETTINGS = SocialSettings.objects.all()
+    LOGO_SETTINGS = LogoSettings.objects.last()
+    ONE_HEADER = OneHeader.objects.all()
+    TWO_HEADER = TwoHeader.objects.all()
+    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
+    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
+
+    # Main
+
+    ctx = {
+        # Required
+        'SEO_SETTINGS': SEO_SETTINGS,
+        'FOOTER_SETTINGS': FOOTER_SETTINGS,
+        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
+        'LOGO_SETTINGS': LOGO_SETTINGS,
+        'ONE_HEADER': ONE_HEADER,
+        'TWO_HEADER': TWO_HEADER,
+        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
+        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
+
+        # Main
+    }
+
+    return render(request, 'actions/ish_haqi.html', ctx)
+
+
+
+def matematik_s_page(request):
+    # Required
+    SEO_SETTINGS = SeoSettings.objects.last()
+    FOOTER_SETTINGS = FooterSettings.objects.last()
+    SOCIAL_SETTINGS = SocialSettings.objects.all()
+    LOGO_SETTINGS = LogoSettings.objects.last()
+    ONE_HEADER = OneHeader.objects.all()
+    TWO_HEADER = TwoHeader.objects.all()
+    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
+    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
+
+    # Main
+
+    ctx = {
+        # Required
+        'SEO_SETTINGS': SEO_SETTINGS,
+        'FOOTER_SETTINGS': FOOTER_SETTINGS,
+        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
+        'LOGO_SETTINGS': LOGO_SETTINGS,
+        'ONE_HEADER': ONE_HEADER,
+        'TWO_HEADER': TWO_HEADER,
+        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
+        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
+
+        # Main
+    }
+
+    return render(request, 'actions/matematik_s.html', ctx)
+
+def t_kriteriya_page(request):
+    # Required
+    SEO_SETTINGS = SeoSettings.objects.last()
+    FOOTER_SETTINGS = FooterSettings.objects.last()
+    SOCIAL_SETTINGS = SocialSettings.objects.all()
+    LOGO_SETTINGS = LogoSettings.objects.last()
+    ONE_HEADER = OneHeader.objects.all()
+    TWO_HEADER = TwoHeader.objects.all()
+    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
+    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
+
+    # Main
+
+    ctx = {
+        # Required
+        'SEO_SETTINGS': SEO_SETTINGS,
+        'FOOTER_SETTINGS': FOOTER_SETTINGS,
+        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
+        'LOGO_SETTINGS': LOGO_SETTINGS,
+        'ONE_HEADER': ONE_HEADER,
+        'TWO_HEADER': TWO_HEADER,
+        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
+        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
+
+        # Main
+    }
+
+    return render(request, 'actions/t_kriteriya.html', ctx)
+
+def xi_kvadrat_page(request):
+    # Required
+    SEO_SETTINGS = SeoSettings.objects.last()
+    FOOTER_SETTINGS = FooterSettings.objects.last()
+    SOCIAL_SETTINGS = SocialSettings.objects.all()
+    LOGO_SETTINGS = LogoSettings.objects.last()
+    ONE_HEADER = OneHeader.objects.all()
+    TWO_HEADER = TwoHeader.objects.all()
+    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
+    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
+
+    # Main
+
+    ctx = {
+        # Required
+        'SEO_SETTINGS': SEO_SETTINGS,
+        'FOOTER_SETTINGS': FOOTER_SETTINGS,
+        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
+        'LOGO_SETTINGS': LOGO_SETTINGS,
+        'ONE_HEADER': ONE_HEADER,
+        'TWO_HEADER': TWO_HEADER,
+        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
+        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
+
+        # Main
+    }
+
+    return render(request, 'actions/xi_kvadrat_2.html', ctx)
+
+
+def bugalteriya_new_page(request):
+    # Required
+    SEO_SETTINGS = SeoSettings.objects.last()
+    FOOTER_SETTINGS = FooterSettings.objects.last()
+    SOCIAL_SETTINGS = SocialSettings.objects.all()
+    LOGO_SETTINGS = LogoSettings.objects.last()
+    ONE_HEADER = OneHeader.objects.all()
+    TWO_HEADER = TwoHeader.objects.all()
+    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
+    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
+
+    # Main
+
+    ctx = {
+        # Required
+        'SEO_SETTINGS': SEO_SETTINGS,
+        'FOOTER_SETTINGS': FOOTER_SETTINGS,
+        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
+        'LOGO_SETTINGS': LOGO_SETTINGS,
+        'ONE_HEADER': ONE_HEADER,
+        'TWO_HEADER': TWO_HEADER,
+        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
+        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
+
+        # Main
+    }
+
+    return render(request, 'actions/bugalteriya.html', ctx)

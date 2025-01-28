@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{% static 'css/plugins.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/navy.css' %}">
+    {% block more_css %}{% endblock more_css %}
 </head>
 
 <body style="">
@@ -116,7 +117,7 @@
                     <a href="{{ i.link }}"><i class="{{ i.icon }}"></i></a>
                 {% endfor %}
             </nav>
-            <p>Loyiha muallifi <span class="text-success">Suropov Bahodir</span></p>
+            <p>Loyiha muallifi <span class="text-success">Baxodir Maydonovich Suropov</span></p>
         </div>
     </div>
 </footer>

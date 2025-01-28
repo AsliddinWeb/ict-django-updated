@@ -26,6 +26,7 @@ class Video(models.Model):
         verbose_name_plural = "Videolar"
 
 class Maruza(models.Model):
+    image = models.ImageField(upload_to='maruzalar', null=True, blank=True)
     title = models.CharField(max_length=255)
     fan = models.CharField(max_length=255)
     body = models.CharField(max_length=255)
@@ -54,6 +55,7 @@ class Slayd(models.Model):
         verbose_name_plural = "Slaydlar"
 
 class Amaliy(models.Model):
+    image = models.ImageField(upload_to='amaliylar', null=True, blank=True)
     title = models.CharField(max_length=255)
     fan = models.CharField(max_length=255)
     body = models.CharField(max_length=255)
@@ -81,6 +83,7 @@ class Testlar(models.Model):
         verbose_name_plural = "testlar"
 
 class Labaratoriyalar(models.Model):
+    image = models.ImageField(upload_to='labaratoriyalar', null=True, blank=True)
     title = models.CharField(max_length=255)
     fan = models.CharField(max_length=255)
     body = models.CharField(max_length=255)

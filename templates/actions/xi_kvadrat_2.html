@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="wrapper bg-gray">
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Pearsonning Xi-kvadrat kriteriyasi usuli bo'yicha hisoblash</h1>
+        
+        <!-- Guruhlar sonini kiritish -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <label for="numGroups" class="form-label">Guruhlar sonini kiriting (1-12):</label>
+                <div class="input-group">
+                    <input type="number" id="numGroups" class="form-control" min="1" max="12" placeholder="Masalan: 6">
+                    <button id="createGroups" class="btn btn-primary">Guruhlarni yaratish</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guruhlar uchun shakl -->
+        <div id="groupsContainer" class="mb-5"></div>
+
+        <!-- Hisoblash tugmasi -->
+        <button id="calculateResults" class="btn btn-success d-none text-white">Natijalarni hisoblash</button>
+
+        <!-- Natijalar -->
+        <div id="resultsContainer" class="mt-5"></div>
+
+        <!-- Batafsil jadval -->
+        <div id="tableContainer" class="mt-5"></div>
+
+        <!-- Grafiklar -->
+        <div id="chartsContainer" class="mt-5"></div>
+
+        <div class="text-center mt-4">
+            <button id="generatePdf" class="btn btn-success text-white d-none">Sertifikatni yuklab olish</button>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://cdn.plot.ly/plotly-2.20.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script> <!-- jStat kutubxonasi -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const MAX_GROUPS = 12;
+        const groupsContainer = document.getElementById('groupsContainer');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const tableContainer = document.getElementById('tableContainer');
+        const chartsContainer = document.getElementById('chartsContainer');
+        const calculateResultsButton = document.getElementById('calculateResults');
+        const createGroupsButton = document.getElementById('createGroups');
+        const numGroupsInput = document.getElementById('numGroups');
+        const generatePdf = document.getElementById('generatePdf');
+
+        // Guruhlarni yaratish
+        createGroupsButton.addEventListener('click', () => {
+            const numGroups = parseInt(numGroupsInput.value);
+
+            if (isNaN(numGroups) || numGroups < 1 || numGroups > MAX_GROUPS) {
+                alert('Guruhlar soni 1 dan 12 gacha bo‘lishi kerak.');
+                return;
+            }
+
+            groupsContainer.innerHTML = '';
+
+            for (let i = 0; i < numGroups; i++) {
+                const groupHtml = `
+                    <div class="card mb-3">
+                        <div class="card-header text-center">Guruh ${i + 1}</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="students-${i}" class="form-label">Talabalar soni:</label>
+                                <input type="number" id="students-${i}" class="form-control" min="1" placeholder="Talabalar sonini kiriting">
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h6 class="text-primary">Oldingi baholar</h6>
+                                    <input type="number" id="score-before-5-${i}" class="form-control mb-2" placeholder="5 baho">
+                                    <input type="number" id="score-before-4-${i}" class="form-control mb-2" placeholder="4 baho">
+                                    <input type="number" id="score-before-3-${i}" class="form-control mb-2" placeholder="3 baho">
+                                    <input type="number" id="score-before-2-${i}" class="form-control" placeholder="2 baho">
+                                </div>
+                                <div class="col">
+                                    <h6 class="text-success">Keyingi baholar</h6>
+                                    <input type="number" id="score-after-5-${i}" class="form-control mb-2" placeholder="5 baho">
+                                    <input type="number" id="score-after-4-${i}" class="form-control mb-2" placeholder="4 baho">
+                                    <input type="number" id="score-after-3-${i}" class="form-control mb-2" placeholder="3 baho">
+                                    <input type="number" id="score-after-2-${i}" class="form-control" placeholder="2 baho">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                groupsContainer.innerHTML += groupHtml;
+            }
+            calculateResultsButton.classList.remove('d-none');
+        });
+
+        // P-value hisoblash funksiyasi
+        function calculateChi2PValue(scoresBefore, scoresAfter) {
+            const observed = [scoresBefore, scoresAfter];
+            const total = scoresBefore.reduce((a, b) => a + b, 0) + scoresAfter.reduce((a, b) => a + b, 0);
+            const rowSums = [scoresBefore.reduce((a, b) => a + b, 0), scoresAfter.reduce((a, b) => a + b, 0)];
+            const colSums = scoresBefore.map((_, i) => scoresBefore[i] + scoresAfter[i]);
+
+            const expected = observed.map((row, i) =>
+                row.map((_, j) => (rowSums[i] * colSums[j]) / total)
+            );
+
+            let chi2 = 0;
+            for (let i = 0; i < observed.length; i++) {
+                for (let j = 0; j < observed[i].length; j++) {
+                    chi2 += Math.pow(observed[i][j] - expected[i][j], 2) / expected[i][j];
+                }
+            }
+
+            const df = (scoresBefore.length - 1) * (observed.length - 1);
+            const pValue = 1 - jStat.chisquare.cdf(chi2, df);
+
+            return { chi2, pValue };
+        }
+
+        // Natijalarni hisoblash
+        calculateResultsButton.addEventListener('click', () => {
+            try {
+                const numGroups = parseInt(numGroupsInput.value);
+                const results = [];
+                const allScoresBefore = [];
+                const allScoresAfter = [];
+                const effectivenessPercentages = [];
+
+                for (let i = 0; i < numGroups; i++) {
+                    const students = parseInt(document.getElementById(`students-${i}`).value);
+                    const scoresBefore = [
+                        parseInt(document.getElementById(`score-before-5-${i}`).value || 0),
+                        parseInt(document.getElementById(`score-before-4-${i}`).value || 0),
+                        parseInt(document.getElementById(`score-before-3-${i}`).value || 0),
+                        parseInt(document.getElementById(`score-before-2-${i}`).value || 0),
+                    ];
+                    const scoresAfter = [
+                        parseInt(document.getElementById(`score-after-5-${i}`).value || 0),
+                        parseInt(document.getElementById(`score-after-4-${i}`).value || 0),
+                        parseInt(document.getElementById(`score-after-3-${i}`).value || 0),
+                        parseInt(document.getElementById(`score-after-2-${i}`).value || 0),
+                    ];
+
+                    if (scoresBefore.reduce((a, b) => a + b, 0) !== students || scoresAfter.reduce((a, b) => a + b, 0) !== students) {
+                        alert(`Guruh ${i + 1} uchun baholar yig'indisi talabalar soniga teng emas.`);
+                        return;
+                    }
+
+                    const avgBefore = scoresBefore.reduce((sum, count, idx) => sum + count * (5 - idx), 0) / students;
+                    const avgAfter = scoresAfter.reduce((sum, count, idx) => sum + count * (5 - idx), 0) / students;
+                    const effectiveness = ((avgAfter - avgBefore) / avgBefore) * 100;
+
+                    allScoresBefore.push(avgBefore);
+                    allScoresAfter.push(avgAfter);
+                    effectivenessPercentages.push(effectiveness);
+
+                    const { chi2, pValue } = calculateChi2PValue(scoresBefore, scoresAfter);
+                    const significance = pValue < 0.05 ? 'Ahamiyatli' : 'Ahamiyatsiz';
+
+                    results.push({
+                        group: i + 1,
+                        avgBefore,
+                        avgAfter,
+                        effectiveness,
+                        chi2,
+                        pValue,
+                        significance,
+                    });
+                }
+
+                // Render results
+                generatePdf.classList.remove('d-none');
+
+                // Natijalarni chiqarish
+                let resultHTML = `
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white text-center">
+                            Hisoblash Natijalari
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                `;
+                results.forEach(({ group, significance, avgBefore, avgAfter }) => {
+                    resultHTML += `<li>Guruh ${group}: <strong>${significance}</strong>, Oldingi o'rtacha = ${avgBefore.toFixed(2)}, Keyingi o'rtacha = ${avgAfter.toFixed(2)}</li>`;
+                });
+                resultHTML += '</ul></div></div>';
+                resultsContainer.innerHTML = resultHTML;
+
+                // Batafsil jadval
+                let tableHTML = `
+                    <div class="card">
+                        <div class="card-header bg-primary text-white text-center">
+                            Batafsil Jadval
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Guruh</th>
+                                        <th>Oldingi O‘rtacha</th>
+                                        <th>Keyingi O‘rtacha</th>
+                                        <th>Samaradorlik (%)</th>
+                                        
+                                        <th>P-qiymati</th>
+                                        <th>Natija</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+                results.forEach(({ group, avgBefore, avgAfter, effectiveness, chi2, pValue, significance }) => {
+                    tableHTML += `
+                        <tr>
+                            <td>${group}</td>
+                            <td>${avgBefore.toFixed(2)}</td>
+                            <td>${avgAfter.toFixed(2)}</td>
+                            <td>${effectiveness.toFixed(2)}%</td>
+                            
+                            <td>${pValue.toFixed(4)}</td>
+                            <td>${significance}</td>
+                        </tr>
+                    `;
+                });
+                tableHTML += '</tbody></table></div></div>';
+                tableContainer.innerHTML = tableHTML;
+
+                // 2D Bar Chart
+                chartsContainer.innerHTML = '<div id="barChart" style="height: 400px;"></div>';
+                const barChartData = [
+                    {
+                        x: Array.from({ length: numGroups }, (_, i) => `Guruh ${i + 1}`),
+                        y: allScoresBefore,
+                        name: 'Oldingi baholar',
+                        type: 'bar',
+                    },
+                    {
+                        x: Array.from({ length: numGroups }, (_, i) => `Guruh ${i + 1}`),
+                        y: allScoresAfter,
+                        name: 'Keyingi baholar',
+                        type: 'bar',
+                    },
+                ];
+                Plotly.newPlot('barChart', barChartData, {
+                    title: 'Samaradorlik grafigi',
+                    barmode: 'group',
+                });
+
+                // 3D Grafik
+                chartsContainer.innerHTML += '<div id="chart3D" style="height: 500px;"></div>';
+                const chartData3D = [
+                    {
+                        x: Array.from({ length: numGroups }, (_, i) => `Guruh ${i + 1}`),
+                        y: effectivenessPercentages,
+                        z: allScoresAfter,
+                        type: 'scatter3d',
+                        mode: 'markers+lines',
+                        marker: { size: 6 },
+                    },
+                ];
+                Plotly.newPlot('chart3D', chartData3D, {
+                    title: '3D Samaradorlik Grafik',
+                    scene: {
+                        xaxis: { title: 'Guruh' },
+                        yaxis: { title: 'Samaradorlik (%)' },
+                        zaxis: { title: 'Keyingi baholar' },
+                    },
+                });
+
+            } catch (error) {
+                alert('Xatolik yuz berdi: ' + error.message);
+            }
+        });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+<script>
+    document.getElementById("generatePdf").addEventListener("click", function () {
+        const element1 = document.getElementById("resultsContainer"); // Butun sahifani olish
+        const element2 = document.getElementById("tableContainer");
+
+        const combinedElement = document.createElement('div');
+        combinedElement.appendChild(element1.cloneNode(true)); // resultsContainer
+        combinedElement.appendChild(element2.cloneNode(true)); // tableContainer
+
+
+        const options = {
+            filename: 'sahifa.pdf', // PDF fayl nomi
+            image: { type: 'jpeg', quality: 0.98 }, // Rasm sifatini belgilash
+            html2canvas: {
+                scale: 2, // Yuqori sifatli rasm olish
+                useCORS: true, // CORS resurslarini qo'llab-quvvatlash
+                scrollX: 0, // X o'qidagi scrollni olib tashlash
+                scrollY: -window.scrollY, // Y o'qidagi scrollni olib tashlash
+                windowWidth: document.documentElement.scrollWidth, // Sahifa kengligi
+                windowHeight: document.documentElement.scrollHeight // Sahifa balandligi
+            },
+            jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' } // PDF formatini belgilash
+        };
+        html2pdf(combinedElement, options); // Sahifani PDFga aylantirish va saqlash
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Natijasi</title>
+    <style>
+        {% include 'css/bootstrap.min.css' %}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center text-primary">Hisobot</h1>
+        <p class="text-muted">O'rtacha boshqaruv guruhi: <strong>{{ avg_control }}</strong></p>
+        <p class="text-muted">O'rtacha eksperiment guruhi: <strong>{{ avg_experiment }}</strong></p>
+        <p class="text-muted">Samaradorlik: <strong>{{ effectiveness }}%</strong></p>
+
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Ko'rsatkich</th>
+                    <th>Qiymat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Boshqaruv guruhi</td>
+                    <td>{{ avg_control }}</td>
+                </tr>
+                <tr>
+                    <td>Eksperiment guruhi</td>
+                    <td>{{ avg_experiment }}</td>
+                </tr>
+                <tr>
+                    <td>Samaradorlik</td>
+                    <td>{{ effectiveness }}%</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <footer class="text-center mt-4">
+            <small>Ushbu hisobot avtomatik tarzda generatsiya qilindi.</small>
+        </footer>
+    </div>
+</body>
+</html>

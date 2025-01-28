@@ -8,7 +8,7 @@ from django.conf.urls.static import static
 # Views
 from main_app.views import home_page
 from contact_app.views import contact_page, me_page
-from more_app.views import communal_page, gaz_page, kredit_page
+from more_app.views import communal_page, gaz_page, kredit_page, ish_haqi, matematik_s_page, t_kriteriya_page, generate_pdf, xi_kvadrat_page, bugalteriya_new_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +27,12 @@ urlpatterns = [
     path('actions/communal/', communal_page, name='communal_page'),
     path('actions/kredit/', kredit_page, name='kredit_page'),
     path('actions/gaz/', gaz_page, name='gaz_page'),
+    path('actions/ish/', ish_haqi, name='ish_haqi'),
+    path('actions/buxgalteriya-dasturi/', bugalteriya_new_page, name='bugalteriya_new_page'),
+    path('actions/hisoblash/', matematik_s_page, name='hisoblash_page'),
+    path('actions/hisoblash/t-kriteriya/', t_kriteriya_page, name='t_kriteriya_page'),
+    path('actions/hisoblash/xi-kvadrat/', xi_kvadrat_page, name='xi_kvadrat_page'),
+    path('generate-pdf/', generate_pdf, name='generate_pdf'),
 
     # Quiz
     path('quiz/', include('quiz_app.urls')),

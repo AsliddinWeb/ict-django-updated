@@ -1,6 +1,32 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block more_css %}
+<style>
+   item {
+      margin-top: 20px;
+  }
+  .project {
+      height: 400px; /* Adjust the height as needed */
+      display: flex;
+      flex-direction: column;
+  }
+
+  .player {
+      height: 50%; /* Adjust the percentage as needed */
+      object-fit: cover; /* Ensure the image covers the area */
+  }
+
+  .post-header {
+      height: 50%; /* Adjust the percentage as needed */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+  }
+</style>
+
+{% endblock more_css %}
+
 {% block content %}
 <section class="wrapper bg-gray">
     <div class="container py-12 py-md-16 text-center">
