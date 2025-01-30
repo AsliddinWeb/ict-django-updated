@@ -8,7 +8,14 @@ from django.conf.urls.static import static
 # Views
 from main_app.views import home_page
 from contact_app.views import contact_page, me_page
-from more_app.views import communal_page, gaz_page, kredit_page, ish_haqi, matematik_s_page, t_kriteriya_page, generate_pdf, xi_kvadrat_page, bugalteriya_new_page
+from more_app.views import (communal_page, gaz_page, kredit_page, ish_haqi, matematik_s_page,
+                            t_kriteriya_page, generate_pdf, xi_kvadrat_page, bugalteriya_new_page,
+                            kompaniya_daromadi_page, statistik_kuzatish_va_tahlil_page,
+                            statistik_grafiklar_page, dinamikani_organish_va_prognozlash_page,
+                            ekonometrik_model_page, daromad_ortasidagi_bogliqlik_page,
+                            trend_va_prognozlash_page, investitsiya_risklarini_baholash_page,
+                            automation_home_page
+                            )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,6 +40,20 @@ urlpatterns = [
     path('actions/hisoblash/t-kriteriya/', t_kriteriya_page, name='t_kriteriya_page'),
     path('actions/hisoblash/xi-kvadrat/', xi_kvadrat_page, name='xi_kvadrat_page'),
     path('generate-pdf/', generate_pdf, name='generate_pdf'),
+
+    # Automation
+    path('automation/kompaniya-daromadi/', kompaniya_daromadi_page, name='kompaniya_daromadi_page'),
+    path('automation/statistik-kuzatish-va-tahlil/', statistik_kuzatish_va_tahlil_page, name='statistik_kuzatish_va_tahlil_page'),
+    path('automation/statistik-grafiklar/', statistik_grafiklar_page, name='statistik_grafiklar_page'),
+    path('automation/dinamikani-organish-va-prognozlash/', dinamikani_organish_va_prognozlash_page, name='dinamikani_organish_va_prognozlash_page'),
+
+    path('automation/ekonometrik-model/', ekonometrik_model_page, name='ekonometrik_model_page'),
+    path('automation/daromad-ortasidagi-bogliqlik/', daromad_ortasidagi_bogliqlik_page, name='daromad_ortasidagi_bogliqlik_page'),
+    path('automation/trend-va-prognozlash/', trend_va_prognozlash_page, name='trend_va_prognozlash_page'),
+    path('automation/investitsiya-risklarini-baholash/', investitsiya_risklarini_baholash_page, name='investitsiya_risklarini_baholash_page'),
+
+    # Home
+    path('automation/', automation_home_page, name='automation_home_page'),
 
     # Quiz
     path('quiz/', include('quiz_app.urls')),

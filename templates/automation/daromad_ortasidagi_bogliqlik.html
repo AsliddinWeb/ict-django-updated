@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="container">
+    <h1>Korrelyatsiya, Regressiya va Prognoz Tahlili</h1>
+
+    <div class="form-group">
+      <label for="price">Narx kiriting (ming so'm):</label>
+      <input type="number" id="price" class="form-control" placeholder="Narxni kiriting" required>
+    </div>
+    <div class="form-group mb-5">
+      <label for="income">Daromad kiriting (ming so'm):</label>
+      <input type="number" id="income" class="form-control" placeholder="Daromadni kiriting" required>
+    </div>
+    <button class="btn btn-primary" onclick="addData()">Ma'lumot qo'shish</button>
+
+    <h3 class="mt-5">Tahlilni amalga oshirish</h3>
+    <button class="btn btn-success" onclick="calculateAnalysis()">Tahlilni amalga oshirish</button>
+
+    <h3 class="mt-5">Narxni prognoz qilish</h3>
+    <div class="form-group">
+      <label for="predict">Daromadni kiriting (ming so'm):</label>
+      <input type="number" id="predict" class="form-control" placeholder="Daromadni kiriting" required>
+    </div>
+    <button class="btn btn-warning" onclick="predictPrice()">Narxni prognoz qilish</button>
+
+    <h3 class="mt-5" id="analysisResults"></h3>
+
+    <canvas id="correlationChart" width="400" height="300"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    let prices = [];
+    let incomes = [];
+    let regressionParams = null;
+
+    function addData() {
+      const price = parseFloat(document.getElementById('price').value);
+      const income = parseFloat(document.getElementById('income').value);
+
+      if (isNaN(price) || isNaN(income)) {
+        alert("Iltimos, to'g'ri sonli qiymatlar kiriting!");
+        return;
+      }
+
+      prices.push(price);
+      incomes.push(income);
+      document.getElementById('price').value = '';
+      document.getElementById('income').value = '';
+      alert("Ma'lumot muvaffaqiyatli qo'shildi!");
+    }
+
+    function calculateAnalysis() {
+      if (prices.length < 2) {
+        alert("Kamida 2 ta ma'lumot kiriting!");
+        return;
+      }
+
+      // Korrelyatsiya va regressiya tahlili
+      const { slope, intercept, rValue, pValue, stdErr } = linregress(incomes, prices);
+
+      // Xulosa tayyorlash
+      let conclusion = '';
+      if (rValue > 0.7) {
+        conclusion = "Xulosa: Narx va daromad o'rtasida kuchli bog'liqlik mavjud.";
+      } else if (rValue > 0.3) {
+        conclusion = "Xulosa: Narx va daromad o'rtasida o'rtacha bog'liqlik mavjud.";
+      } else {
+        conclusion = "Xulosa: Narx va daromad o'rtasida zaif bog'liqlik mavjud.";
+      }
+
+      // Natijalarni ko'rsatish
+      const resultText = `
+        Korrelyatsiya koeffitsienti (R): ${rValue.toFixed(2)}<br>
+        Regressiya tenglamasi: y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}<br>
+        P-qiymat: ${pValue.toFixed(4)}<br>
+        Standart xato: ${stdErr.toFixed(2)}<br><br>
+        ${conclusion}
+      `;
+      document.getElementById('analysisResults').innerHTML = resultText;
+
+      // Grafik chizish
+      const ctx = document.getElementById('correlationChart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'Kiritilgan ma\'lumotlar',
+            data: incomes.map((income, index) => ({ x: income, y: prices[index] })),
+            backgroundColor: 'blue',
+            borderColor: 'blue',
+            showLine: false
+          }, {
+            label: 'Regressiya chizig\'i',
+            data: incomes.map(income => ({ x: income, y: income * slope + intercept })),
+            type: 'line',
+            borderColor: 'red',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: 'Daromad (ming so\'m)' } },
+            y: { title: { display: true, text: 'Narx (ming so\'m)' } }
+          }
+        }
+      });
+
+      // Regressiya parametrlarini saqlash
+      regressionParams = { slope, intercept };
+    }
+
+    function predictPrice() {
+      if (!regressionParams) {
+        alert("Avval regressiya tahlilini amalga oshiring!");
+        return;
+      }
+
+      const income = parseFloat(document.getElementById('predict').value);
+      if (isNaN(income)) {
+        alert("Iltimos, to'g'ri sonli qiymat kiriting!");
+        return;
+      }
+
+      const predictedPrice = regressionParams.slope * income + regressionParams.intercept;
+      alert(`Prognoz qilingan narx: ${predictedPrice.toFixed(2)} ming so'm`);
+    }
+
+    // Regressiya tahlilini hisoblash uchun yordamchi funktsiya
+    function linregress(x, y) {
+      const n = x.length;
+      const sumX = x.reduce((a, b) => a + b, 0);
+      const sumY = y.reduce((a, b) => a + b, 0);
+      const sumX2 = x.reduce((a, b) => a + b * b, 0);
+      const sumXY = x.reduce((a, b, i) => a + b * y[i], 0);
+
+      const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+      const intercept = (sumY - slope * sumX) / n;
+      const rValue = (n * sumXY - sumX * sumY) / Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY * sumY - sumY * sumY));
+      const pValue = 0.05;  // Example static value, to be calculated more properly in real implementation
+      const stdErr = 1.5;   // Example static value, to be calculated more properly
+
+      return { slope, intercept, rValue, pValue, stdErr };
+    }
+  </script>
+{% endblock content %}

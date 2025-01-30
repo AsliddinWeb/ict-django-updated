@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="wrapper bg-gray">
+    <div class="container py-4 py-md-6 text-center">
+        <div class="row">
+            <div class="col-lg-10 col-xxl-8 mx-auto">
+                <h1 class="display-1 mb-3">Dinamikani O‘rganish va Prognozlash</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="wrapper bg-light">
+    <div class="container p-5">
+        <div class="col-12">
+            <h3 class="mb-3">Yil va Oylar sonini kiriting:</h3>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="year" class="form-label">Yilni kiriting:</label>
+                    <input type="text" id="year" class="form-control" placeholder="Masalan, 2025">
+                </div>
+                <div class="col-md-4">
+                    <label for="num_months" class="form-label">Oylar sonini kiriting (1-12):</label>
+                    <input type="number" id="num_months" class="form-control" placeholder="Masalan, 6">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="setYearAndMonths()">Yil va Oylar sonini belgilash</button>
+
+            <div id="monthsForm" class="mt-4"></div>
+
+            <button class="btn btn-success mt-3" onclick="analyzeData()">Tahlil qilish</button>
+
+            <div id="analysisResult" class="mt-4 alert alert-info d-none"></div>
+
+            <div id="chartsContainer" class="mt-5"></div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let months = [];
+    let revenues = [];
+
+    const MONTH_NAMES = [
+        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
+        "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"
+    ];
+
+    // Yil va oylar sonini belgilash funksiyasi
+    function setYearAndMonths() {
+        let year = document.getElementById("year").value;
+        let numMonths = parseInt(document.getElementById("num_months").value);
+
+        if (numMonths < 1 || numMonths > 12) {
+            alert("Oylar soni 1 dan 12 gacha bo'lishi kerak!");
+            return;
+        }
+
+        months = MONTH_NAMES.slice(0, numMonths);
+        revenues = Array(numMonths).fill(null);  // Daromadlar uchun boshlang'ich qiymat
+
+        updateMonthsForm();
+        alert(`Yil: ${year}, Oylar soni: ${numMonths} belgilandi.`);
+    }
+
+    // Oylarga mos daromadlarni kiritish formasi
+    function updateMonthsForm() {
+        const monthsForm = document.getElementById("monthsForm");
+        monthsForm.innerHTML = "";  // Oldingi formalarni tozalash
+
+        let label = document.createElement("p");
+        label.textContent = "Oylarga mos daromadlarni kiriting (million so'mda):";
+        monthsForm.appendChild(label);
+
+        months.forEach((month, i) => {
+            let div = document.createElement("div");
+            div.classList.add("mb-3");
+
+            let monthLabel = document.createElement("label");
+            monthLabel.textContent = month;
+            div.appendChild(monthLabel);
+
+            let input = document.createElement("input");
+            input.type = "number";
+            input.classList.add("form-control");
+            input.placeholder = "Masalan, 1000";
+            input.id = `revenue_${i}`;
+            div.appendChild(input);
+
+            monthsForm.appendChild(div);
+        });
+    }
+
+    // Tahlil qilish funksiyasi
+    function analyzeData() {
+        months.forEach((month, i) => {
+            revenues[i] = parseFloat(document.getElementById(`revenue_${i}`).value);
+        });
+
+        if (revenues.some(value => isNaN(value))) {
+            alert("Iltimos, barcha daromadlarni to'g'ri kiriting!");
+            return;
+        }
+
+        // Prognoz qilish (holatni soddalashtirib, prognoz yaratish)
+        let forecast = revenues.map((value, index) => value + (Math.random() * 100));  // Soddalashtirilgan prognoz
+
+        let analysisResult = document.getElementById("analysisResult");
+        analysisResult.innerHTML = `<strong>Prognoz natijalari:</strong><br>
+            ${MONTH_NAMES.slice(0, months.length).map((month, i) => `${month}: ${forecast[i].toFixed(2)} mln so'm`).join("<br>")}
+        `;
+        analysisResult.classList.remove("d-none");
+
+        createCharts(forecast);
+    }
+
+    // Grafiklarni yaratish
+    function createCharts(forecast) {
+        let chartsContainer = document.getElementById("chartsContainer");
+        chartsContainer.innerHTML = "";  // Oldingi grafiklarni tozalash
+
+        // Daromadlar va prognozlarni chizish
+        let canvas = document.createElement('canvas');
+        chartsContainer.appendChild(canvas);
+        new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Haqiqiy Daromad',
+                        data: revenues,
+                        borderColor: 'blue',
+                        fill: false
+                    },
+                    {
+                        label: 'Prognoz Daromad',
+                        data: forecast,
+                        borderColor: 'red',
+                        fill: false,
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Daromadlar va Prognoz"
+                },
+                scales: {
+                    x: { title: { display: true, text: "Oylar" } },
+                    y: { title: { display: true, text: "Daromad (mln so'm)" } }
+                }
+            }
+        });
+    }
+</script>
+{% endblock scripts %}

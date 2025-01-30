@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="wrapper bg-gray">
+    <div class="container py-4 py-md-6 text-center">
+        <div class="row">
+            <div class="col-lg-10 col-xxl-8 mx-auto">
+                <h1 class="display-1 mb-3">Ekonometrik Model</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="wrapper bg-light">
+    <div class="container p-5">
+        <div class="col-12">
+            <h3 class="mb-3">Ma'lumotlarni kiriting:</h3>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="price" class="form-label">Narxni kiriting:</label>
+                    <input type="number" id="price" class="form-control" placeholder="Masalan, 100">
+                </div>
+                <div class="col-md-4">
+                    <label for="demand" class="form-label">Talabni kiriting:</label>
+                    <input type="number" id="demand" class="form-control" placeholder="Masalan, 500">
+                </div>
+                <div class="col-md-4">
+                    <label for="supply" class="form-label">Taklifni kiriting:</label>
+                    <input type="number" id="supply" class="form-control" placeholder="Masalan, 400">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="addData()">Ma'lumot qo'shish</button>
+            <button class="btn btn-success mt-3" onclick="calculateModel()">Modelni hisoblash</button>
+
+            <div id="result" class="mt-4 alert alert-info d-none"></div>
+
+            <!-- Grafiklar uchun konteyner -->
+            <div id="chartsContainer" class="mt-5"></div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let prices = [];
+    let demands = [];
+    let supplies = [];
+
+    // Ma'lumot qo'shish funksiyasi
+    function addData() {
+        let price = parseFloat(document.getElementById("price").value);
+        let demand = parseFloat(document.getElementById("demand").value);
+        let supply = parseFloat(document.getElementById("supply").value);
+
+        if (isNaN(price) || isNaN(demand) || isNaN(supply)) {
+            alert("Iltimos, barcha maydonlarni to'g'ri to'ldiring!");
+            return;
+        }
+
+        prices.push(price);
+        demands.push(demand);
+        supplies.push(supply);
+
+        alert("Ma'lumot muvaffaqiyatli qo'shildi!");
+        document.getElementById("price").value = "";
+        document.getElementById("demand").value = "";
+        document.getElementById("supply").value = "";
+    }
+
+    // Modelni hisoblash funksiyasi
+    function calculateModel() {
+        if (prices.length < 2) {
+            alert("Kamida 2 ta ma'lumot kiriting!");
+            return;
+        }
+
+        // Ma'lumotlar
+        let resultText = `Ma'lumotlar:\nNarx: ${prices}\nTalab: ${demands}\nTaklif: ${supplies}`;
+        let resultElement = document.getElementById("result");
+        resultElement.innerHTML = resultText;
+        resultElement.classList.remove("d-none");
+
+        // Grafiklar yaratish
+        createCharts();
+    }
+
+    // Grafiklar yaratish funksiyasi
+    function createCharts() {
+        let chartsContainer = document.getElementById("chartsContainer");
+        chartsContainer.innerHTML = ""; // Oldingi grafiklarni tozalash
+
+        // Talab va Taklifning Narxga ta'sirini ko'rsatish
+        let scatterCanvas = document.createElement('canvas');
+        chartsContainer.appendChild(scatterCanvas);
+        new Chart(scatterCanvas, {
+            type: 'scatter',
+            data: {
+                labels: demands,
+                datasets: [{
+                    label: 'Talab va Taklifga asoslangan Narx',
+                    data: demands.map((demand, i) => ({ x: supplies[i], y: prices[i] })),
+                    backgroundColor: 'blue',
+                    borderColor: 'blue',
+                    showLine: false
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Talab, Taklif va Narx o'rtasidagi bog'liqlik"
+                },
+                scales: {
+                    x: { title: { display: true, text: "Taklif" } },
+                    y: { title: { display: true, text: "Narx" } }
+                }
+            }
+        });
+
+        // Talab va Taklif bo'yicha Narxning vaqt o'zgarishi
+        let lineCanvas = document.createElement('canvas');
+        chartsContainer.appendChild(lineCanvas);
+        new Chart(lineCanvas, {
+            type: 'line',
+            data: {
+                labels: prices,
+                datasets: [
+                    {
+                        label: 'Narx',
+                        data: prices,
+                        borderColor: 'red',
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Vaqt bo'yicha Narx"
+                },
+                scales: {
+                    x: { title: { display: true, text: "Vaqt" } },
+                    y: { title: { display: true, text: "Narx" } }
+                }
+            }
+        });
+    }
+</script>
+{% endblock scripts %}

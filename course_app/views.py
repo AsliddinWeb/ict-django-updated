@@ -9,16 +9,9 @@ from django.conf import settings
 from settings_app.models import *
 from .models import *
 from more_app.models import OqituvchiKategoriyalari
+
+
 def video_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
 
     barcha_kategoriyalar = OqituvchiKategoriyalari.objects.all()
 
@@ -37,15 +30,6 @@ def video_page(request):
         page_obj = paginator.page(paginator.num_pages)
 
     ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
 
         'FAYLLAR_KATEGORIYASI': barcha_kategoriyalar,
 
@@ -57,15 +41,6 @@ def video_page(request):
     return render(request, 'courses/video.html', ctx)
 
 def slayd_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
 
     barcha_kategoriyalar = OqituvchiKategoriyalari.objects.all()
 
@@ -84,15 +59,6 @@ def slayd_page(request):
         page_obj = paginator.page(paginator.num_pages)
 
     ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
 
         'FAYLLAR_KATEGORIYASI': barcha_kategoriyalar,
 
@@ -104,15 +70,6 @@ def slayd_page(request):
     return render(request, 'courses/slayd.html', ctx)
 
 def maruza_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
 
     barcha_kategoriyalar = OqituvchiKategoriyalari.objects.all()
 
@@ -131,15 +88,6 @@ def maruza_page(request):
         page_obj = paginator.page(paginator.num_pages)
 
     ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
 
         'FAYLLAR_KATEGORIYASI': barcha_kategoriyalar,
 
@@ -151,15 +99,6 @@ def maruza_page(request):
     return render(request, 'courses/maruza.html', ctx)
 
 def labaratoriya_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
 
     barcha_kategoriyalar = OqituvchiKategoriyalari.objects.all()
 
@@ -178,15 +117,6 @@ def labaratoriya_page(request):
         page_obj = paginator.page(paginator.num_pages)
 
     ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
 
         'FAYLLAR_KATEGORIYASI': barcha_kategoriyalar,
 
@@ -198,15 +128,6 @@ def labaratoriya_page(request):
     return render(request, 'courses/labaratoriya.html', ctx)
 
 def amaliy_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
 
     barcha_kategoriyalar = OqituvchiKategoriyalari.objects.all()
 
@@ -225,15 +146,6 @@ def amaliy_page(request):
         page_obj = paginator.page(paginator.num_pages)
 
     ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
 
         'FAYLLAR_KATEGORIYASI': barcha_kategoriyalar,
 
@@ -245,15 +157,6 @@ def amaliy_page(request):
     return render(request, 'courses/amaliy.html', ctx)
 
 def test_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
 
     barcha_kategoriyalar = OqituvchiKategoriyalari.objects.all()
 
@@ -272,15 +175,6 @@ def test_page(request):
         page_obj = paginator.page(paginator.num_pages)
 
     ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
 
         'FAYLLAR_KATEGORIYASI': barcha_kategoriyalar,
 

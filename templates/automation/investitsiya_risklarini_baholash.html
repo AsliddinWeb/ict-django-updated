@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Ehtimollar nazariyasi va statistik tahlil</h1>
+
+    <div class="mb-3">
+        <label for="projectName" class="form-label">Loyiha nomini kiriting:</label>
+        <input type="text" id="projectName" class="form-control" placeholder="Loyiha nomini kiriting">
+    </div>
+
+    <div class="mb-3">
+        <label for="mean" class="form-label">Kutilayotgan daromadni kiriting (mln so'm):</label>
+        <input type="number" id="mean" class="form-control" placeholder="Kutilayotgan daromadni kiriting">
+    </div>
+
+    <div class="mb-3">
+        <label for="variance" class="form-label">Dispersiyani kiriting (mln²):</label>
+        <input type="number" id="variance" class="form-control" placeholder="Dispersiyani kiriting">
+    </div>
+
+    <div class="text-center">
+        <button id="addProject" class="btn btn-primary me-3">Loyihani qo'shish</button>
+        <button id="analyzeProjects" class="btn btn-success">Loyihalarni tahlil qilish</button>
+    </div>
+
+    <div id="message" class="mt-3 text-center"></div>
+
+    <canvas id="chart" class="mt-5"></canvas>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let projects = [];
+    let means = [];
+    let variances = [];
+
+    // Loyihani qo'shish
+    $("#addProject").click(function() {
+        let projectName = $("#projectName").val();
+        let mean = $("#mean").val();
+        let variance = $("#variance").val();
+
+        if (projectName && mean && variance) {
+            projects.push(projectName);
+            means.push(Number(mean));
+            variances.push(Number(variance));
+            $("#message").text(`${projectName} loyihasi muvaffaqiyatli qo'shildi!`).removeClass('text-danger').addClass('text-success');
+            $("#projectName").val('');
+            $("#mean").val('');
+            $("#variance").val('');
+        } else {
+            $("#message").text("Iltimos, barcha maydonlarni to'ldiring!").removeClass('text-success').addClass('text-danger');
+        }
+    });
+
+    // Loyihalarni tahlil qilish
+    $("#analyzeProjects").click(function() {
+        if (projects.length < 2) {
+            alert("Kamida 2 ta loyiha kiriting!");
+            return;
+        }
+
+        // Standart og'ishni hisoblash
+        let stdDevs = variances.map(variance => Math.sqrt(variance));
+
+        // Tahlil natijalari
+        let analysisText = "Loyihalarning statistik tahlili:\n";
+        for (let i = 0; i < projects.length; i++) {
+            analysisText += `${i + 1}. Loyiha ${projects[i]}: Kutilayotgan daromad = ${means[i].toFixed(2)} mln so'm, Standart og'ish = ${stdDevs[i].toFixed(2)} mln.\n`;
+        }
+
+        // Optimal loyiha
+        let optimalProjectIndex = means.indexOf(Math.max(...means));
+        let conclusion = `
+            <br>Xulosa: ${projects[optimalProjectIndex]} loyihasi eng yuqori kutilayotgan daromadga ega.
+            Ammo, standart og'ish ${stdDevs[optimalProjectIndex].toFixed(2)} mln bo'lgani sababli, risklarni inobatga olish tavsiya etiladi.
+        `;
+        analysisText += conclusion;
+
+        $("#message").html(analysisText);
+        drawChart();
+    });
+
+    // Grafik chizish
+    function drawChart() {
+        let ctx = document.getElementById('chart').getContext('2d');
+        let chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: projects,
+                datasets: [{
+                    label: 'Kutilayotgan daromad',
+                    data: means,
+                    backgroundColor: 'skyblue',
+                    borderColor: 'blue',
+                    borderWidth: 1,
+                    yAxisID: 'y',
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Daromad (mln so\'m)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock scripts %}

@@ -4,7 +4,6 @@ from django.conf import settings
 
 from django.shortcuts import render, get_object_or_404
 
-from settings_app.models import *
 from .models import MeyoriyXujjatlar, OqituvchiKategoriyalari
 
 # Pdf
@@ -40,15 +39,6 @@ def generate_pdf(request):
 
 
 def more_page(request, category_id):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
 
     # Main
     barcha_kategoriyalar = OqituvchiKategoriyalari.objects.all()
@@ -57,15 +47,6 @@ def more_page(request, category_id):
     fayllar = MeyoriyXujjatlar.objects.filter(kategoriyasi=kategoriya)
 
     ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
 
         # Main
         'FAYLLAR_KATEGORIYASI': barcha_kategoriyalar,
@@ -89,236 +70,53 @@ def download_media_file(request, pk):
         return response
 
 def communal_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
-
-    # Main
-
-    ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
-
-        # Main
-    }
-
-    return render(request, 'actions/communal.html', ctx)
+    return render(request, 'actions/communal.html')
 
 def gaz_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
-
-    # Main
-
-    ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
-
-        # Main
-    }
-
-    return render(request, 'actions/gaz.html', ctx)
+    return render(request, 'actions/gaz.html')
 
 def kredit_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
-
-    # Main
-
-    ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
-
-        # Main
-    }
-
-    return render(request, 'actions/kredit.html', ctx)
+    return render(request, 'actions/kredit.html')
 
 def ish_haqi(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
-
-    # Main
-
-    ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
-
-        # Main
-    }
-
-    return render(request, 'actions/ish_haqi.html', ctx)
-
-
+    return render(request, 'actions/ish_haqi.html')
 
 def matematik_s_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
-
-    # Main
-
-    ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
-
-        # Main
-    }
-
-    return render(request, 'actions/matematik_s.html', ctx)
+    return render(request, 'actions/matematik_s.html')
 
 def t_kriteriya_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
-
-    # Main
-
-    ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
-
-        # Main
-    }
-
-    return render(request, 'actions/t_kriteriya.html', ctx)
+    return render(request, 'actions/t_kriteriya.html')
 
 def xi_kvadrat_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
-
-    # Main
-
-    ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
-
-        # Main
-    }
-
-    return render(request, 'actions/xi_kvadrat_2.html', ctx)
+    return render(request, 'actions/xi_kvadrat.html')
 
 
 def bugalteriya_new_page(request):
-    # Required
-    SEO_SETTINGS = SeoSettings.objects.last()
-    FOOTER_SETTINGS = FooterSettings.objects.last()
-    SOCIAL_SETTINGS = SocialSettings.objects.all()
-    LOGO_SETTINGS = LogoSettings.objects.last()
-    ONE_HEADER = OneHeader.objects.all()
-    TWO_HEADER = TwoHeader.objects.all()
-    RIGHT_BUTTON_SETTINGS = RightButtonSettings.objects.last()
-    PHONE_EMAIL_SETTINGS = PhoneEmailSettings.objects.last()
+    return render(request, 'actions/bugalteriya.html')
 
-    # Main
+def kompaniya_daromadi_page(request):
+    return render(request, 'automation/kompaniya_daromadi.html')
 
-    ctx = {
-        # Required
-        'SEO_SETTINGS': SEO_SETTINGS,
-        'FOOTER_SETTINGS': FOOTER_SETTINGS,
-        'SOCIAL_SETTINGS': SOCIAL_SETTINGS,
-        'LOGO_SETTINGS': LOGO_SETTINGS,
-        'ONE_HEADER': ONE_HEADER,
-        'TWO_HEADER': TWO_HEADER,
-        'RIGHT_BUTTON_SETTINGS': RIGHT_BUTTON_SETTINGS,
-        'PHONE_EMAIL_SETTINGS': PHONE_EMAIL_SETTINGS,
+def statistik_kuzatish_va_tahlil_page(request):
+    return render(request, 'automation/statistik_kuzatish_va_tahlil.html')
 
-        # Main
-    }
+def statistik_grafiklar_page(request):
+    return render(request, 'automation/statistik_grafiklar.html')
 
-    return render(request, 'actions/bugalteriya.html', ctx)
+def dinamikani_organish_va_prognozlash_page(request):
+    return render(request, 'automation/dinamikani_organish_va_prognozlash.html')
+
+def ekonometrik_model_page(request):
+    return render(request, 'automation/ekonometrik_model.html')
+
+def daromad_ortasidagi_bogliqlik_page(request):
+    return render(request, 'automation/daromad_ortasidagi_bogliqlik.html')
+
+def trend_va_prognozlash_page(request):
+    return render(request, 'automation/trend_va_prognozlash.html')
+
+def investitsiya_risklarini_baholash_page(request):
+    return render(request, 'automation/investitsiya_risklarini_baholash.html')
+
+def automation_home_page(request):
+    return render(request, 'automation/home.html')

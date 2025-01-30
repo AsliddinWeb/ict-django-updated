@@ -31,6 +31,10 @@
 
         <!-- Grafiklar -->
         <div id="chartsContainer" class="mt-5"></div>
+
+        <div class="text-center mt-4">
+            <button id="generatePdf" class="btn btn-success text-white d-none">Sertifikatni yuklab olish</button>
+        </div>
     </div>
 </section>
 {% endblock content %}
@@ -48,6 +52,7 @@
         const calculateResultsButton = document.getElementById('calculateResults');
         const createGroupsButton = document.getElementById('createGroups');
         const numGroupsInput = document.getElementById('numGroups');
+        const generatePdf = document.getElementById('generatePdf');
 
         // Guruhlarni yaratish
         createGroupsButton.addEventListener('click', () => {
@@ -168,6 +173,9 @@
                     });
                 }
 
+                // Render results
+                generatePdf.classList.remove('d-none');
+
                 // Natijalarni chiqarish
                 let resultHTML = `
                     <div class="card mb-4">
@@ -266,6 +274,34 @@
                 alert('Xatolik yuz berdi: ' + error.message);
             }
         });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+<script>
+    document.getElementById("generatePdf").addEventListener("click", function () {
+        const element1 = document.getElementById("resultsContainer"); // Butun sahifani olish
+        const element2 = document.getElementById("tableContainer");
+
+        const combinedElement = document.createElement('div');
+        combinedElement.appendChild(element1.cloneNode(true)); // resultsContainer
+        combinedElement.appendChild(element2.cloneNode(true)); // tableContainer
+
+
+        const options = {
+            filename: 'sahifa.pdf', // PDF fayl nomi
+            image: { type: 'jpeg', quality: 0.98 }, // Rasm sifatini belgilash
+            html2canvas: {
+                scale: 2, // Yuqori sifatli rasm olish
+                useCORS: true, // CORS resurslarini qo'llab-quvvatlash
+                scrollX: 0, // X o'qidagi scrollni olib tashlash
+                scrollY: -window.scrollY, // Y o'qidagi scrollni olib tashlash
+                windowWidth: document.documentElement.scrollWidth, // Sahifa kengligi
+                windowHeight: document.documentElement.scrollHeight // Sahifa balandligi
+            },
+            jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' } // PDF formatini belgilash
+        };
+        html2pdf(combinedElement, options); // Sahifani PDFga aylantirish va saqlash
     });
 </script>
 {% endblock %}

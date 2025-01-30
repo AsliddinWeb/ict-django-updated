@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Trend va Prognozlash</h1>
+
+    <div class="mb-3">
+        <label for="year" class="form-label">Yil kiriting:</label>
+        <input type="number" id="year" class="form-control" placeholder="Yilni kiriting">
+    </div>
+
+    <div class="mb-3">
+        <label for="production" class="form-label">Ishlab chiqarish hajmini kiriting:</label>
+        <input type="number" id="production" class="form-control" placeholder="Ishlab chiqarish hajmini kiriting">
+    </div>
+
+    <button id="addData" class="btn btn-primary me-2">Ma'lumot qo'shish</button>
+    <button id="calculate" class="btn btn-success">Trendni hisoblash va prognoz qilish</button>
+
+    <div id="message" class="my-4"></div>
+
+    <canvas id="chart"></canvas>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let years = [];
+    let production = [];
+    let futureYears = [];
+    let futureProduction = [];
+
+    // Ma'lumot qo'shish
+    $("#addData").click(function() {
+        let year = $("#year").val();
+        let prod = $("#production").val();
+
+        if (year && prod) {
+            years.push(Number(year));
+            production.push(Number(prod));
+            $("#message").html('<div class="alert alert-success">Ma\'lumot muvaffaqiyatli qo\'shildi!</div>');
+            $("#year").val('');
+            $("#production").val('');
+        } else {
+            $("#message").html('<div class="alert alert-danger">Iltimos, to\'g\'ri ma\'lumotlarni kiriting!</div>');
+        }
+    });
+
+    // Trend va prognozni hisoblash
+    $("#calculate").click(function() {
+        if (years.length < 2) {
+            alert("Kamida 2 ta ma'lumot kiriting!");
+            return;
+        }
+
+        // Lineer regressiya hisoblash
+        let X = years.map(year => [year]);
+        let y = production;
+
+        const regression = new SimpleLinearRegression(X, y);
+        let slope = regression.slope();
+        let intercept = regression.intercept();
+
+        // Kelgusi yillar uchun prognoz qilish
+        let futureYearsRange = [...Array(6).keys()].map(i => years[years.length - 1] + i + 1);
+        futureYears = [...years, ...futureYearsRange];
+        futureProduction = futureYears.map(year => slope * year + intercept);
+
+        let resultText = `
+            <strong>Trend tenglamasi:</strong> y = ${slope.toFixed(2)}x + ${intercept.toFixed(2)}<br>
+            <strong>Kelhusi yillar uchun prognoz:</strong> <br>
+        `;
+        futureYearsRange.forEach((year, index) => {
+            resultText += `${year}: ${futureProduction[years.length + index].toFixed(2)}<br>`;
+        });
+        resultText += `<br><strong>Xulosa:</strong> Trend natijalariga ko'ra, ishlab chiqarish hajmi keyingi yillarda o'sishda davom etadi.`;
+
+        $("#message").html(resultText);
+
+        drawChart();
+    });
+
+    // Grafik chizish
+    function drawChart() {
+        let ctx = document.getElementById('chart').getContext('2d');
+        let chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: futureYears,
+                datasets: [{
+                    label: 'Ishlab chiqarish hajmi',
+                    data: futureProduction,
+                    borderColor: 'red',
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Yillar'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Ishlab chiqarish hajmi'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Oddiy lineer regressiya funksiyasi
+    class SimpleLinearRegression {
+        constructor(X, y) {
+            this.X = X;
+            this.y = y;
+            this.coefficients = this.calculateCoefficients();
+        }
+
+        calculateCoefficients() {
+            const n = this.X.length;
+            const meanX = this.X.reduce((acc, val) => acc + val[0], 0) / n;
+            const meanY = this.y.reduce((acc, val) => acc + val, 0) / n;
+
+            let numerator = 0;
+            let denominator = 0;
+
+            for (let i = 0; i < n; i++) {
+                numerator += (this.X[i][0] - meanX) * (this.y[i] - meanY);
+                denominator += (this.X[i][0] - meanX) ** 2;
+            }
+
+            const slope = numerator / denominator;
+            const intercept = meanY - slope * meanX;
+
+            return { slope, intercept };
+        }
+
+        slope() {
+            return this.coefficients.slope;
+        }
+
+        intercept() {
+            return this.coefficients.intercept;
+        }
+    }
+</script>
+{% endblock scripts %}

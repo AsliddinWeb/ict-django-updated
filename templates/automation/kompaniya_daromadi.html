@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="wrapper bg-gray">
+    <div class="container py-4 py-md-6 text-center">
+        <div class="row">
+            <div class="col-lg-10 col-xxl-8 mx-auto">
+                <h1 class="display-1 mb-3">Daromad va Xarajatlar Tahlili</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="wrapper bg-light">
+    <div class="container p-5">
+        <div class="col-12">
+            <h3 class="mb-3">Ma'lumotlarni kiriting:</h3>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="year" class="form-label">Yilni kiriting:</label>
+                    <input type="number" id="year" class="form-control" placeholder="Masalan, 2025">
+                </div>
+                <div class="col-md-6">
+                    <label for="numMonths" class="form-label">Oylar sonini kiriting (1-12):</label>
+                    <input type="number" id="numMonths" class="form-control" min="1" max="12">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="setYearAndMonths()">Yil va Oylar sonini belgilash</button>
+
+            <div id="monthsContainer" class="mt-4"></div>
+
+            <button class="btn btn-success mt-3" onclick="analyzeData()">Tahlil qilish</button>
+
+            <div id="analysisResult" class="mt-4 alert alert-info d-none"></div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    let months = [];
+    const MONTH_NAMES = [
+        "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun", 
+        "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"
+    ];
+
+    function setYearAndMonths() {
+        let year = document.getElementById("year").value;
+        let numMonths = parseInt(document.getElementById("numMonths").value);
+        let monthsContainer = document.getElementById("monthsContainer");
+
+        if (!year || numMonths < 1 || numMonths > 12) {
+            alert("Iltimos, yilni va 1 dan 12 gacha bo'lgan oylar sonini kiriting!");
+            return;
+        }
+
+        months = MONTH_NAMES.slice(0, numMonths);
+        monthsContainer.innerHTML = ""; // Tozalash
+
+        months.forEach((month, index) => {
+            let row = document.createElement("div");
+            row.classList.add("row", "mb-2");
+
+            row.innerHTML = `
+                <div class="col-md-4">
+                    <label class="form-label">${month}</label>
+                </div>
+                <div class="col-md-4">
+                    <input type="number" class="form-control revenue" placeholder="Daromad (mln so'm)" id="revenue-${index}">
+                </div>
+                <div class="col-md-4">
+                    <input type="number" class="form-control expense" placeholder="Xarajat (mln so'm)" id="expense-${index}">
+                </div>
+            `;
+            monthsContainer.appendChild(row);
+        });
+    }
+
+    function analyzeData() {
+        if (months.length === 0) {
+            alert("Avval yil va oylar sonini belgilash tugmasini bosing!");
+            return;
+        }
+
+        let revenues = [];
+        let expenses = [];
+
+        months.forEach((_, index) => {
+            let revenue = parseFloat(document.getElementById(`revenue-${index}`).value) || 0;
+            let expense = parseFloat(document.getElementById(`expense-${index}`).value) || 0;
+            revenues.push(revenue);
+            expenses.push(expense);
+        });
+
+        let arithMeanRevenue = revenues.reduce((a, b) => a + b, 0) / revenues.length;
+        let arithMeanExpense = expenses.reduce((a, b) => a + b, 0) / expenses.length;
+
+        let geomMeanRevenue = Math.exp(revenues.map(Math.log).reduce((a, b) => a + b, 0) / revenues.length);
+        let geomMeanExpense = Math.exp(expenses.map(Math.log).reduce((a, b) => a + b, 0) / expenses.length);
+
+        let minRevenue = Math.min(...revenues);
+        let maxRevenue = Math.max(...revenues);
+        let minExpense = Math.min(...expenses);
+        let maxExpense = Math.max(...expenses);
+
+        let resultText = `
+            <strong>O'rtacha qiymatlar:</strong><br>
+            Daromad (mln so'm):<br>
+            - Arifmetik o'rtacha: ${arithMeanRevenue.toFixed(2)}<br>
+            - Geometrik o'rtacha: ${geomMeanRevenue.toFixed(2)}<br>
+            - Minimal: ${minRevenue.toFixed(2)}<br>
+            - Maksimal: ${maxRevenue.toFixed(2)}<br><br>
+
+            Xarajat (mln so'm):<br>
+            - Arifmetik o'rtacha: ${arithMeanExpense.toFixed(2)}<br>
+            - Geometrik o'rtacha: ${geomMeanExpense.toFixed(2)}<br>
+            - Minimal: ${minExpense.toFixed(2)}<br>
+            - Maksimal: ${maxExpense.toFixed(2)}<br><br>
+        `;
+
+        let conclusion = "";
+        if (arithMeanRevenue > arithMeanExpense) {
+            conclusion = "<strong>Xulosa:</strong> Daromad xarajatlardan yuqori, kompaniya foyda keltirmoqda.";
+        } else if (arithMeanRevenue < arithMeanExpense) {
+            conclusion = "<strong>Xulosa:</strong> Xarajatlar daromaddan yuqori, kompaniya zarar ko'rmoqda.";
+        } else {
+            conclusion = "<strong>Xulosa:</strong> Daromad va xarajatlar teng, kompaniya foyda ham zarar ham qilmayapti.";
+        }
+
+        let analysisResult = document.getElementById("analysisResult");
+        analysisResult.innerHTML = resultText + "<br>" + conclusion;
+        analysisResult.classList.remove("d-none");
+    }
+</script>
+{% endblock scripts %}
