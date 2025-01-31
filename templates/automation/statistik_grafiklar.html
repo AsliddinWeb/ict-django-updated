@@ -6,7 +6,35 @@
     <div class="container py-4 py-md-6 text-center">
         <div class="row">
             <div class="col-lg-10 col-xxl-8 mx-auto">
-                <h1 class="display-1 mb-3">Sotuv va Reklama Tahlili</h1>
+                <h1 class="display-1 mb-3">Iqtisodiy jarayonlarning statistik vizualizatsiyasi</h1>
+                <div class="card-body">
+    <h2 class="text-center mb-4">📌 Avtomatlashtirilgan dasturning maqsadi</h2>
+    <p>
+        Ushbu dastur sotuv hajmi va reklama xarajatlari o‘rtasidagi bog‘liqlikni vizual va statistik tahlil qilish, ularning vaqt bo‘yicha
+        dinamikasini baholash hamda iqtisodiy ko‘rsatkichlarning taqsimotini grafik shaklda ifodalash uchun ishlab chiqilgan.
+        Dastur korxona marketing strategiyasini optimallashtirishga ko‘maklashuvchi analitik vosita sifatida foydalaniladi.
+    </p>
+
+    <h3 class="mt-4">📌 Uning vazifalari:</h3>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>1.</strong> Ma’lumotlarni yig‘ish va qayta ishlash – foydalanuvchi tomonidan kiritilgan iqtisodiy ko‘rsatkichlarni strukturalashtirish va tahlil qilish.</li>
+        <li class="list-group-item"><strong>2.</strong> Sotuv hajmi va reklama xarajatlari o‘rtasidagi bog‘liqlikni baholash – ularning statistik bog‘liqligini (korrelatsiyasini) aniqlash.</li>
+        <li class="list-group-item"><strong>3.</strong> Vaqt bo‘yicha dinamikani vizualizatsiya qilish – sotuv hajmi va reklama xarajatlarining vaqt davomida qanday o‘zgarishini ko‘rsatish.</li>
+        <li class="list-group-item"><strong>4.</strong> Taqsimotni baholash – histogramma va KDE (yadro zichligi baholash) orqali sotuv hajmi va reklama xarajatlarining taqsimotini ko‘rsatish.</li>
+        <li class="list-group-item"><strong>5.</strong> Tahliliy natijalarni grafik shaklda ifodalash – iqtisodiy ko‘rsatkichlarning o‘zgaruvchanligini chiziqli va tarqoq nuqtalar grafiklari yordamida tasvirlash.</li>
+    </ul>
+
+    <h3 class="mt-4">📌 Uning imkoniyatlari:</h3>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">✅ <strong>Ma’lumotlarni avtomatik qayta ishlash</strong> – sotuv hajmi va reklama xarajatlarini avtomatik ravishda qayta ishlash va tahlil qilish.</li>
+        <li class="list-group-item">✅ <strong>Sotuv hajmi va reklama xarajatlari o‘rtasidagi bog‘liqlikni vizualizatsiya qilish</strong> – ushbu iqtisodiy o‘zgaruvchilar o‘rtasidagi statistik munosabatni aniqlash.</li>
+        <li class="list-group-item">✅ <strong>Dinamik tahlil</strong> – sotuv va marketing xarajatlarining vaqt bo‘yicha o‘zgarishini grafiklar orqali kuzatish.</li>
+        <li class="list-group-item">✅ <strong>Taqsimotni baholash</strong> – sotuv hajmi va reklama xarajatlarining tarqalishini histogramma va KDE grafigi yordamida ifodalash.</li>
+        <li class="list-group-item">✅ <strong>Interfaol GUI interfeysi</strong> – foydalanuvchilarga qulay grafik interfeys orqali ma’lumotlarni kiritish va natijalarni ko‘rish imkoniyati.</li>
+        <li class="list-group-item">✅ <strong>Tezkor va ishonchli hisob-kitoblar</strong> – statistika va econometrika metodlari asosida iqtisodiy ko‘rsatkichlarni tezkor tahlil qilish.</li>
+    </ul>
+</div>
+
             </div>
         </div>
     </div>
@@ -32,7 +60,7 @@
             </div>
 
             <button class="btn btn-primary" onclick="addData()">Ma'lumot qo'shish</button>
-            <button class="btn btn-success mt-3" onclick="analyzeData()">Tahlil qilish</button>
+            <button class="btn btn-success" onclick="analyzeData()">Tahlil qilish</button>
 
             <div id="analysisResult" class="mt-4 alert alert-info d-none"></div>
 
