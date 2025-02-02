@@ -63,18 +63,33 @@
             <button class="btn btn-success mt-3" onclick="analyzeData()">Tahlil qilish</button>
 
             <div id="analysisResult" class="mt-4 alert alert-info d-none"></div>
+
+            <!-- Grafiklar uchun joy -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <canvas id="lineChart"></canvas>
+                </div>
+                <div class="col-md-6">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 {% endblock content %}
 
 {% block scripts %}
+<!-- Chart.js kutubxonasini ulash -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
     let months = [];
     const MONTH_NAMES = [
         "Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun",
         "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"
     ];
+
+    let lineChart, barChart; // Grafik obyektlari
 
     function setYearAndMonths() {
         let year = document.getElementById("year").value;
@@ -167,6 +182,88 @@
         let analysisResult = document.getElementById("analysisResult");
         analysisResult.innerHTML = resultText + "<br>" + conclusion;
         analysisResult.classList.remove("d-none");
+
+        // Grafiklarni chizish
+        drawCharts(revenues, expenses);
+    }
+
+    function drawCharts(revenues, expenses) {
+        const ctx1 = document.getElementById('lineChart').getContext('2d');
+        const ctx2 = document.getElementById('barChart').getContext('2d');
+
+        // Avvalgi grafiklarni o'chirish
+        if (lineChart) lineChart.destroy();
+        if (barChart) barChart.destroy();
+
+        // Chiziqli grafik
+        lineChart = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Daromad (mln so\'m)',
+                        data: revenues,
+                        borderColor: 'blue',
+                        fill: false,
+                    },
+                    {
+                        label: 'Xarajat (mln so\'m)',
+                        data: expenses,
+                        borderColor: 'red',
+                        fill: false,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Daromad va Xarajatlar Dinamikasi'
+                    }
+                }
+            }
+        });
+
+        // Bar grafik
+        barChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ["Arifmetik o'rtacha", "Geometrik o'rtacha", "Minimal", "Maksimal"],
+                datasets: [
+                    {
+                        label: 'Daromad (mln so\'m)',
+                        data: [
+                            (revenues.reduce((a, b) => a + b, 0) / revenues.length).toFixed(2),
+                            Math.exp(revenues.map(Math.log).reduce((a, b) => a + b, 0) / revenues.length).toFixed(2),
+                            Math.min(...revenues).toFixed(2),
+                            Math.max(...revenues).toFixed(2)
+                        ],
+                        backgroundColor: 'blue',
+                    },
+                    {
+                        label: 'Xarajat (mln so\'m)',
+                        data: [
+                            (expenses.reduce((a, b) => a + b, 0) / expenses.length).toFixed(2),
+                            Math.exp(expenses.map(Math.log).reduce((a, b) => a + b, 0) / expenses.length).toFixed(2),
+                            Math.min(...expenses).toFixed(2),
+                            Math.max(...expenses).toFixed(2)
+                        ],
+                        backgroundColor: 'red',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'O\'rtacha Qiymatlar'
+                    }
+                }
+            }
+        });
     }
 </script>
 {% endblock scripts %}
